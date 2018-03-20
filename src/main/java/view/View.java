@@ -32,7 +32,7 @@ public class View implements Observer{
 	//Object that manages chat actions such as "typing action"
 	BaseResponse baseResponse;
 	
-	TelegramBot bot = TelegramBotAdapter.build("465527379:AAH__TKK53YBun2KMdC3Ja1wM8SO7tkYlUU");
+	TelegramBot bot = TelegramBotAdapter.build("insert your bot api key in here");
 	
 	public View(Model model) {
 		this.model = model;
