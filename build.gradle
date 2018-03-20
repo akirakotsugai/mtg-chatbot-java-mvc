@@ -25,5 +25,14 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    
+    // https://mvnrepository.com/artifact/com.github.pengrad/java-telegram-bot-api
+	compile group: 'com.github.pengrad', name: 'java-telegram-bot-api', version: '2.3.1'
+    
+    // jsoup HTML parser library @ https://jsoup.org/
+	compile 'org.jsoup:jsoup:1.11.2'
+	
+	// https://github.com/MagicTheGathering/mtg-sdk-java
+	compile 'io.magicthegathering:javasdk:0.0.6'
 }
 
