@@ -17,7 +17,7 @@ public class ControllerSearchCard implements ControllerFetch{
 
 	@Override
 	public void fetch(Update update) {
-		view.sendTypingAction(update);
+		view.sendTypingAction(update.message().chat().id());
 		model.searchCard(update);
 		
 	}

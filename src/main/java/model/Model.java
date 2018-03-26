@@ -138,7 +138,7 @@ public class Model implements Subject {
 		notifyObservers(update.message().chat().id(), reply, "cardprices");
 	}
 	
-	public void scrapComingSoon(Update update) {
+	public void scrapUpcomingSets(Update update) {
 			
 		Document doc;
 		try {
@@ -162,7 +162,7 @@ public class Model implements Subject {
 				}
 			
 			}
-			notifyObservers(update.message().chat().id(), reply, "comingsoon");			
+			notifyObservers(update.message().chat().id(), reply, "allUpcomingSets");			
 		
 		} catch (IOException e) {
 			notifyObservers(update.message().chat().id(),
@@ -170,6 +170,38 @@ public class Model implements Subject {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void scrapUpcomingSetDetails(Update update) {
+		
+		Document doc;
+		String detailsLink = update.callbackQuery().data().split("#")[1];
+		String reply = "";
+		
+		try {
+			
+			doc = Jsoup.connect("https://magic.wizards.com"+detailsLink).get();
+			Element info = doc.getElementById("-tabs-1");
+			
+			if (info == null)
+				reply = "You'd be better off taking a look at Magic:"
+						+ " The Gathering website for further information.";
+			
+			else {
+				Elements ps = info.getElementsByTag("p");
+				for (Element p : ps) {
+					reply += p.text() + "\n";
+				}		
+			}
+			
+			notifyObservers(update.callbackQuery().message().chat().id(), reply, "upcomingSetDetails");
+			
+			
+		} catch (IOException e) {
+			notifyObservers(update.callbackQuery().message().chat().id(), 
+					"The details concerning the upcoming set you chose"
+					+ " is unfortunately unavailable at the moment.", "upcomingSetDetails");
+		}	
 	}
 	
 }

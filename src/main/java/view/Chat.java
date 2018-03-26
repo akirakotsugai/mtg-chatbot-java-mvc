@@ -5,7 +5,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 
 import control.ControllerFetch;
 import control.ControllerFetchCard;
-import control.ControllerFetchComingSoon;
+import control.ControllerFetchUpcomingSetDetails;
+import control.ControllerFetchUpcomingSets;
 import control.ControllerSearchCard;
 
 public class Chat {
@@ -38,6 +39,11 @@ public class Chat {
 					controllerFetch = new ControllerFetchCard(view.model, view);
 					fetchActivated = true;		
 				}
+				
+				if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {
+					controllerFetch = new ControllerFetchUpcomingSetDetails(view.model, view);
+					callController(userInput);
+				}
 			}
 			
 			else {			
@@ -53,7 +59,7 @@ public class Chat {
 				}
 			
 				else if(userInput.message().text().equals("/check_upcoming_sets_out")){	
-					controllerFetch = new ControllerFetchComingSoon(view.model, view);
+					controllerFetch = new ControllerFetchUpcomingSets(view.model, view);
 					callController(userInput);	
 				
 				}
@@ -61,7 +67,7 @@ public class Chat {
 				else if(userInput.message().text().equals("/picture"));
 			
 				else {
-					view.sendTypingAction(userInput);
+					view.sendTypingAction(userInput.message().chat().id());
 					view.sendResponse = view.bot.execute(new SendMessage(this.id,
 							"What would you like to do? Enter one of the following commands:\n"
 							+ "/search_for_a_card\n"

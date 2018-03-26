@@ -17,7 +17,7 @@ public class ControllerFetchCard implements ControllerFetch {
 	
 	@Override
 	public void fetch(Update update) {
-		view.sendTypingAction(update);
+		view.sendTypingAction(update.callbackQuery().message().chat().id());
 		model.fetchCardInfo(update);
 		
 	}
