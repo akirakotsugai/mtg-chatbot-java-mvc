@@ -1,8 +1,10 @@
 package view;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramBotAdapter;
@@ -18,9 +20,6 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 
-import control.ControllerFetch;
-import control.ControllerFetchCard;
-import control.ControllerSearchCard;
 import model.Model;
 
 public class View implements Observer{
@@ -28,7 +27,7 @@ public class View implements Observer{
 	private HashMap<Long, Chat> chats;
 	Model model;
 	private int queueIndex;
-	
+	//
 	//Object that receives messages
 	GetUpdatesResponse updatesResponse;
 	//Object that sends responses
@@ -36,7 +35,7 @@ public class View implements Observer{
 	//Object that manages chat actions such as "typing action"
 	BaseResponse baseResponse;
 	
-	TelegramBot bot = TelegramBotAdapter.build("insert your bot api key in here");
+	TelegramBot bot = TelegramBotAdapter.build("465527379:AAH__TKK53YBun2KMdC3Ja1wM8SO7tkYlUU");
 	
 	public View(Model model) {
 		this.model = model;
@@ -89,7 +88,25 @@ public class View implements Observer{
 	public void update(long chatId, Object data, String type) {
 		
 		if(type.equals("cardsFound")){
+			LinkedHashMap<Integer,String> cards = (LinkedHashMap<Integer, String>) data;
+			List<InlineKeyboardButton[]> buttons = new LinkedList<InlineKeyboardButton[]>();
 			
+			for(Map.Entry<Integer, String> entry : cards.entrySet()) {
+				String buttonText = entry.getValue();
+				Integer cardId = entry.getKey();
+				buttons.add(new InlineKeyboardButton[]{
+		                new InlineKeyboardButton(buttonText)
+		                .callbackData("getCardInfo#"+cardId)});
+			}
+			
+			InlineKeyboardButton[][] buttonsMatrix = buttons.toArray(new InlineKeyboardButton[0][]);			
+			InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup(buttonsMatrix);
+			
+			System.out.println("ovo");
+			sendResponse = bot.execute(new SendMessage(chatId,
+					"just pick one out")
+					.parseMode(ParseMode.HTML).replyMarkup(inlineKeyboard));
+			chats.get(chatId).setFetchActivated(false);
 		}
 		
 		else if(type.equals("cardPic")){
@@ -123,6 +140,11 @@ public class View implements Observer{
 		
 		else if(type.equals("upcomingSetDetails")){	
 			sendResponse = bot.execute(new SendMessage(chatId, (String) data));		
+		}
+		
+		else if(type.equals("nocardfound")) {
+			sendResponse = bot.execute(new SendMessage(chatId, (String) data));
+			chats.get(chatId).setFetchActivated(false);
 		}
 		
 		

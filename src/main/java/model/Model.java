@@ -54,20 +54,18 @@ public class Model implements Subject {
 				new LinkedList<>(Arrays.asList("name=" + update.message().text())));
 		
 		if(!cardsFound.isEmpty()) {
-			LinkedHashMap<String, String> reply = new LinkedHashMap<String, String>();
+			LinkedHashMap<Integer, String> reply = new LinkedHashMap<Integer, String>();
 			
 			for(Card card : cardsFound) {
-				reply.put(Integer.toString(
-						card.getMultiverseid()), card.getName() + " - " + card.getSetName()
-						);
+				reply.put(card.getMultiverseid(), card.getName() + " - " + card.getSetName());
 			}
-			notifyObservers(update.message().chat().id(), reply, "cardsfound");			
+			notifyObservers(update.message().chat().id(), reply, "cardsFound");			
 		}
 		
 		else notifyObservers(
 				update.message().chat().id(),
 				"I am sorry "+update.message().chat().firstName() +
-				". I haven't found any or at least related to "+update.message().text(),
+				". I haven't found any name-related card or even similar to "+update.message().text(),
 				"nocardfound");
 	
 	}
@@ -132,7 +130,8 @@ public class Model implements Subject {
 			}
 		
 		} catch (IOException e) {
-			reply = "I'm afraid I wasn't able to connect to the prices' provider due to a connection problem.";
+			reply = "I'm sorry"+update.message().chat().firstName()
+					+"I wasn't able to connect to the prices' provider due to a connection problem.";
 		}
 		
 		notifyObservers(update.message().chat().id(), reply, "cardprices");

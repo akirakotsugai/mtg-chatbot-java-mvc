@@ -26,12 +26,13 @@ public class Chat {
 	
 	public void processInput(Update userInput, View view) {
 			
-			// Checking whether it should call its
-			//controller passing user's input
-			if (fetchActivated) {
-				callController(userInput);
-			}
-			
+		// Checking whether it should call its
+		//controller passing user's input
+		if (fetchActivated) {
+			callController(userInput);
+		}
+		
+		else {
 			//checking  whether it is a pressed button or a message
 			if (userInput.callbackQuery() != null){
 				
@@ -47,7 +48,8 @@ public class Chat {
 			}
 			
 			else {			
-				if(userInput.message().text().equals("/searchcard")) {
+				if(userInput.message().text().equals("/search_card")) {
+					view.sendTypingAction(id);
 					view.sendResponse = view.bot.execute(new SendMessage(this.id,
 							"Tell me the card's name.\n If you are too lazy or aren't sure of its name, "
 							+ "say at least part of it and I'll try to find all name-related cards"
@@ -58,7 +60,7 @@ public class Chat {
 				
 				}
 			
-				else if(userInput.message().text().equals("/check_upcoming_sets_out")){	
+				else if(userInput.message().text().equals("/coming_soon")){	
 					controllerFetch = new ControllerFetchUpcomingSets(view.model, view);
 					callController(userInput);	
 				
@@ -67,13 +69,14 @@ public class Chat {
 				else if(userInput.message().text().equals("/picture"));
 			
 				else {
-					view.sendTypingAction(userInput.message().chat().id());
+					view.sendTypingAction(id);
 					view.sendResponse = view.bot.execute(new SendMessage(this.id,
-							"What would you like to do? Enter one of the following commands:\n"
-							+ "/search_for_a_card\n"
-							+ "/check_upcoming_sets_out" ));
+							"What would you like to do now? Enter one of the following commands:\n"
+							+ "/search_card to search for a card.\n"
+							+ "/coming_soon to check the upcoming sets out." ));
 				}
 			}		
+		}	
 	}
 
 	public boolean isFetchActivated() {
