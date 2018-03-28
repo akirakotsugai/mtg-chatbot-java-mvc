@@ -102,11 +102,16 @@ public class View implements Observer{
 			InlineKeyboardButton[][] buttonsMatrix = buttons.toArray(new InlineKeyboardButton[0][]);			
 			InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup(buttonsMatrix);
 			
-			System.out.println("ovo");
 			sendResponse = bot.execute(new SendMessage(chatId,
 					"just pick one out")
 					.parseMode(ParseMode.HTML).replyMarkup(inlineKeyboard));
 			chats.get(chatId).setFetchActivated(false);
+		}
+		
+		else if(type.equals("cardInfo")) {
+			sendResponse = bot.execute(new SendMessage(chatId,
+					(String) data)
+					.parseMode(ParseMode.HTML));
 		}
 		
 		else if(type.equals("cardPic")){

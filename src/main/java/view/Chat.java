@@ -38,7 +38,7 @@ public class Chat {
 				
 				if (userInput.callbackQuery().data().contains("getCardInfo")) {				
 					controllerFetch = new ControllerFetchCard(view.model, view);
-					fetchActivated = true;		
+					callController(userInput);		
 				}
 				
 				if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {

@@ -71,19 +71,44 @@ public class Model implements Subject {
 	}
 	
 	public void fetchCardInfo(Update update) {
-		
-		Card card = CardAPI.getCard(
-				Integer.parseInt(update.callbackQuery().data()));	
+		int cardId = Integer.parseInt(update.callbackQuery().data().split("#")[1]);
+		Card card = CardAPI.getCard(cardId);	
 		String reply = new String();
 		
-		String name = "<b>"+card.getName()+"</b>";
-		String colours;
-		String cmc;
-		String power;
-		String toughness;
-		String flavor;
-		 
-		notifyObservers(update.message().chat().id(), reply, "cardinfo");
+		try {
+			String name = "<b>"+card.getName()+"</b>";
+			String type = card.getType();
+			String cmc = Double.toString(card.getCmc());
+			String[] coloursArray = card.getColors();
+			String colours = "";
+			String power;
+			String toughness;
+			String flavor;
+			String text;
+			
+			if (coloursArray != null) {
+				for (String colour : coloursArray) {
+					colours = "";
+					colours += colour + " ";
+				}
+			}
+			else colours = "None";
+			
+			power = card.getPower() != null ? card.getPower() : "None";
+			toughness = card.getToughness() != null ? card.getToughness() : "None";
+			flavor = card.getFlavor() != null ? "<i>"+card.getFlavor()+"</i>" : "";
+			text = card.getText() != null ? "<i>"+card.getText()+"</i>" : "";
+			
+			reply = name + "\n" + "Power: " + power + " Toughness: " + toughness + "\n"
+					+ "Cmc: " + cmc + " Colours: " + colours + "\n" + "Type: " + type + "\n"
+					+ text + "\n" + flavor + "\n\n Anything Else?" ;
+		
+		} catch (Exception e) {
+			reply = "I'm so sorry " + update.callbackQuery().message().chat().firstName() 
+					+ ". I wasn't able to bring the info you asked for.";
+		}
+		
+		notifyObservers(update.callbackQuery().message().chat().id(), reply, "cardInfo");
 
 	}
 	
