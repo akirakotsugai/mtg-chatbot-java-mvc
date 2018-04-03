@@ -8,11 +8,18 @@ public class Main {
 	private static Model model;
 
 	public static void main(String[] args) {
-		model = Model.getInstance();
-		View view = new View(model);
-		model.registerObserver(view); //connection Model -> View
-		view.receiveUsersMessages();
+		try {
+			System.out.println("Running bot...");
 
+			model = Model.getInstance();			
+			View view = new View(model);
+			model.registerObserver(view); //connection Model -> View
+			view.receiveUsersMessages();
+		} catch (Exception e) {
+			System.out.println("Bot crashed: " + e.getMessage());
+		} finally {
+			System.out.println("Bot stopped.");
+		}
 	}
 
 }
