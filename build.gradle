@@ -33,6 +33,6 @@ dependencies {
 	compile 'org.jsoup:jsoup:1.11.2'
 	
 	// https://github.com/MagicTheGathering/mtg-sdk-java
-	compile 'io.magicthegathering:javasdk:0.0.6'
+	compile 'io.magicthegathering:javasdk:0.0.10'
 }
 

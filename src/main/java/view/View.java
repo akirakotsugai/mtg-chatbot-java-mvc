@@ -16,6 +16,7 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendChatAction;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -35,7 +36,7 @@ public class View implements Observer{
 	//Object that manages chat actions such as "typing action"
 	BaseResponse baseResponse;
 	
-	TelegramBot bot = TelegramBotAdapter.build("465527379:AAH__TKK53YBun2KMdC3Ja1wM8SO7tkYlUU");
+	TelegramBot bot = TelegramBotAdapter.build("INSERT YOUR API TOKEN HERE");
 	
 	public View(Model model) {
 		this.model = model;
@@ -108,14 +109,33 @@ public class View implements Observer{
 			chats.get(chatId).setFetchActivated(false);
 		}
 		
-		else if(type.equals("cardInfo")) {
+		else if(type.contains("cardInfo")) {
+			int cardId = Integer.parseInt(type.split("#")[1]);
+			List<InlineKeyboardButton[]> otherOptions = new LinkedList<InlineKeyboardButton[]>();
+			otherOptions.add(new InlineKeyboardButton[]{
+	                new InlineKeyboardButton("Picture")
+	                .callbackData("cardPic#"+cardId),
+	                new InlineKeyboardButton("Rulings")
+	                .callbackData("cardRulings#"+cardId)
+	                
+			});
+						
+			InlineKeyboardButton[][] buttonsMatrix = otherOptions.toArray(new InlineKeyboardButton[0][]);
+			InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup(buttonsMatrix);
+
+			
 			sendResponse = bot.execute(new SendMessage(chatId,
 					(String) data)
-					.parseMode(ParseMode.HTML));
+					.parseMode(ParseMode.HTML).replyMarkup(inlineKeyboard));
 		}
 		
-		else if(type.equals("cardPic")){
+		else if(type.equals("cardPic")){	
+			sendResponse = bot.execute(new SendPhoto(chatId, (String) data));
+		}
 		
+		else if(type.equals("cardRulings")) {
+			sendResponse = bot.execute(new SendMessage(chatId,
+					(String) data).parseMode(ParseMode.HTML));
 		}
 		
 		else if(type.equals("allUpcomingSets")) {

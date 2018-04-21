@@ -17,6 +17,7 @@ import com.pengrad.telegrambot.model.Update;
 import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.api.MTGAPI;
 import io.magicthegathering.javasdk.resource.Card;
+import io.magicthegathering.javasdk.resource.Ruling;
 import view.Observer;
 
 public class Model implements Subject {
@@ -72,8 +73,8 @@ public class Model implements Subject {
 	
 	public void fetchCardInfo(Update update) {
 		int cardId = Integer.parseInt(update.callbackQuery().data().split("#")[1]);
-		Card card = CardAPI.getCard(cardId);	
-		String reply = new String();
+		String reply;
+		Card card = CardAPI.getCard(cardId);		
 		
 		try {
 			String name = "<b>"+card.getName()+"</b>";
@@ -108,17 +109,42 @@ public class Model implements Subject {
 					+ ". I wasn't able to bring the info you asked for.";
 		}
 		
-		notifyObservers(update.callbackQuery().message().chat().id(), reply, "cardInfo");
+		notifyObservers(update.callbackQuery().message().chat().id(), reply, "cardInfo"+"#"+cardId);
 
 	}
 	
 	public void fetchCardPicture(Update update) {
-		
+
 		Card card = CardAPI.getCard(
-				Integer.parseInt(update.callbackQuery().data()));
+				Integer.parseInt(update.callbackQuery().data().split("#")[1]));
+
+		String reply = new String();
 		
-		notifyObservers(update.message().chat().id(),
-				card.getImageUrl(), "cardpic");
+		String userName = update.callbackQuery().message().chat().firstName();
+		reply = card.getImageUrl() != null ?
+				card.getImageUrl() : "I'm sorry "+userName+". I haven't got its picture yet";
+		
+		notifyObservers(update.callbackQuery().message().chat().id(),
+				reply, "cardPic");
+	}
+	
+	public void fetchCardRulings(Update update) {
+		Card card = CardAPI.getCard(
+				Integer.parseInt(update.callbackQuery().data().split("#")[1]));
+		
+		Ruling[] rulings = card.getRulings();
+		String reply = new String();
+		
+		if (rulings != null) {
+			for (Ruling ruling : rulings) {
+				reply += "<b>"+ruling.getDate()+"</b>\n";
+				reply += ruling.getText()+"\n\n";
+			}		
+		}	
+		else reply = "I'm sorry. I haven't got its rulings yet.";		
+	
+		notifyObservers(update.callbackQuery().message().chat().id(),
+				reply, "cardRulings");
 	}
 	
 	public void scrapPrices(Update update) {

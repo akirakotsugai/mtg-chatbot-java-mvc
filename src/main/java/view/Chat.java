@@ -5,6 +5,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 
 import control.ControllerFetch;
 import control.ControllerFetchCard;
+import control.ControllerFetchCardPicture;
+import control.ControllerFetchCardRulings;
 import control.ControllerFetchUpcomingSetDetails;
 import control.ControllerFetchUpcomingSets;
 import control.ControllerSearchCard;
@@ -41,10 +43,23 @@ public class Chat {
 					callController(userInput);		
 				}
 				
-				if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {
+				else if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {
 					controllerFetch = new ControllerFetchUpcomingSetDetails(view.model, view);
 					callController(userInput);
 				}
+				
+				else if (userInput.callbackQuery().data().contains("cardPic")) {
+					controllerFetch = new ControllerFetchCardPicture(view.model, view);
+					callController(userInput);
+				}
+				
+				else if (userInput.callbackQuery().data().contains("cardRulings")) {
+					controllerFetch = new ControllerFetchCardRulings(view.model, view);
+					callController(userInput);
+				}
+				
+				
+				
 			}
 			
 			else {			
