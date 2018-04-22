@@ -6,7 +6,6 @@ import model.Model;
 import view.View;
 
 public class ControllerFetchCardPicture implements ControllerFetch {
-	
 	private Model model;
 	private View view;
 	
@@ -18,7 +17,5 @@ public class ControllerFetchCardPicture implements ControllerFetch {
 	@Override
 	public void fetch(Update update) {
 		model.fetchCardPicture(update);
-		
 	}
-
 }

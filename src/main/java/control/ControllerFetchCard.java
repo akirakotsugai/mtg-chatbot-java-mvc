@@ -6,7 +6,6 @@ import model.Model;
 import view.View;
 
 public class ControllerFetchCard implements ControllerFetch {
-	
 	private Model model;
 	private View view;
 	
@@ -19,7 +18,5 @@ public class ControllerFetchCard implements ControllerFetch {
 	public void fetch(Update update) {
 		view.sendTypingAction(update.callbackQuery().message().chat().id());
 		model.fetchCardInfo(update);
-		
 	}
-
 }

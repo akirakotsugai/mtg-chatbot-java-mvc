@@ -22,63 +22,62 @@ public class Chat {
 	}
 	
 	public void callController(Update userInput) {
-			controllerFetch.fetch(userInput);
+		controllerFetch.fetch(userInput);
 	}
 	
+	private void callCallbackResponse(Update userInput, View view) {
+		if (userInput.callbackQuery().data().contains("getCardInfo")) {
+			controllerFetch = new ControllerFetchCard(view.model, view);
+		} else if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {
+			controllerFetch = new ControllerFetchUpcomingSetDetails(view.model, view);
+		} else if (userInput.callbackQuery().data().contains("cardPic")) {
+			controllerFetch = new ControllerFetchCardPicture(view.model, view);
+		} else if (userInput.callbackQuery().data().contains("cardRulings")) {
+			controllerFetch = new ControllerFetchCardRulings(view.model, view);
+		}
+
+		callController(userInput);
+	}
+
+	private void callMessageResponse(Update userInput, View view) {
+		if(userInput.message().text().equals("/search_card")) {
+			view.sendTypingAction(id);
+			view.sendResponse = view.bot.execute(new SendMessage(this.id,
+					"Tell me the card's name.\n If you are too lazy or aren't sure of its name, "
+					+ "say at least part of it and I'll try to find all name-related cards"
+					+ " so that you can pick one out."));
+
+			controllerFetch = new ControllerSearchCard(view.model, view);
+			fetchActivated = true;
+		}
+
+		else if(userInput.message().text().equals("/coming_soon")){
+			controllerFetch = new ControllerFetchUpcomingSets(view.model, view);
+			callController(userInput);
+		}
+
+		else if(userInput.message().text().equals("/picture"));
+
+		else {
+			view.sendTypingAction(id);
+			view.sendResponse = view.bot.execute(new SendMessage(this.id,
+					"What would you like to do now? Enter one of the following commands:\n"
+					+ "/search_card to search for a card.\n"
+					+ "/coming_soon to check the upcoming sets out." ));
+		}
+	}
+
 	public void processInput(Update userInput, View view) {
-			
 		// Checking whether it should call its
 		//controller passing user's input
 		if (fetchActivated) {
 			callController(userInput);
-		}
-		
-		else {
+		} else {
 			//checking  whether it is a pressed button or a message
 			if (userInput.callbackQuery() != null){
-				if (userInput.callbackQuery().data().contains("getCardInfo")) {				
-					controllerFetch = new ControllerFetchCard(view.model, view);
-					callController(userInput);		
-				} else if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {
-					controllerFetch = new ControllerFetchUpcomingSetDetails(view.model, view);
-					callController(userInput);
-				} else if (userInput.callbackQuery().data().contains("cardPic")) {
-					controllerFetch = new ControllerFetchCardPicture(view.model, view);
-					callController(userInput);
-				} else if (userInput.callbackQuery().data().contains("cardRulings")) {
-					controllerFetch = new ControllerFetchCardRulings(view.model, view);
-					callController(userInput);
-				}
-			}
-			
-			else {			
-				if(userInput.message().text().equals("/search_card")) {
-					view.sendTypingAction(id);
-					view.sendResponse = view.bot.execute(new SendMessage(this.id,
-							"Tell me the card's name.\n If you are too lazy or aren't sure of its name, "
-							+ "say at least part of it and I'll try to find all name-related cards"
-							+ " so that you can pick one out."));
-				
-					controllerFetch = new ControllerSearchCard(view.model, view);
-					fetchActivated = true;
-				
-				}
-			
-				else if(userInput.message().text().equals("/coming_soon")){	
-					controllerFetch = new ControllerFetchUpcomingSets(view.model, view);
-					callController(userInput);	
-				
-				}
-			
-				else if(userInput.message().text().equals("/picture"));
-			
-				else {
-					view.sendTypingAction(id);
-					view.sendResponse = view.bot.execute(new SendMessage(this.id,
-							"What would you like to do now? Enter one of the following commands:\n"
-							+ "/search_card to search for a card.\n"
-							+ "/coming_soon to check the upcoming sets out." ));
-				}
+				callCallbackResponse(userInput, view);
+			} else {
+				callMessageResponse(userInput, view);
 			}		
 		}	
 	}
@@ -90,5 +89,4 @@ public class Chat {
 	public void setFetchActivated(boolean fetchActivated) {
 		this.fetchActivated = fetchActivated;
 	}
-	
 }
