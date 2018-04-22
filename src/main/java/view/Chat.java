@@ -12,7 +12,6 @@ import control.ControllerFetchUpcomingSets;
 import control.ControllerSearchCard;
 
 public class Chat {
-	
 	private long id;
 	private ControllerFetch controllerFetch;
 	private boolean fetchActivated;
@@ -37,29 +36,19 @@ public class Chat {
 		else {
 			//checking  whether it is a pressed button or a message
 			if (userInput.callbackQuery() != null){
-				
 				if (userInput.callbackQuery().data().contains("getCardInfo")) {				
 					controllerFetch = new ControllerFetchCard(view.model, view);
 					callController(userInput);		
-				}
-				
-				else if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {
+				} else if (userInput.callbackQuery().data().contains("upcomingSetDetails")) {
 					controllerFetch = new ControllerFetchUpcomingSetDetails(view.model, view);
 					callController(userInput);
-				}
-				
-				else if (userInput.callbackQuery().data().contains("cardPic")) {
+				} else if (userInput.callbackQuery().data().contains("cardPic")) {
 					controllerFetch = new ControllerFetchCardPicture(view.model, view);
 					callController(userInput);
-				}
-				
-				else if (userInput.callbackQuery().data().contains("cardRulings")) {
+				} else if (userInput.callbackQuery().data().contains("cardRulings")) {
 					controllerFetch = new ControllerFetchCardRulings(view.model, view);
 					callController(userInput);
 				}
-				
-				
-				
 			}
 			
 			else {			

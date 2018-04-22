@@ -44,43 +44,35 @@ public class View implements Observer{
 		queueIndex = 0;
 	}
 	
-
-	
 	public void sendTypingAction(Long chatId) {
-		baseResponse = bot.execute(
-				new SendChatAction(
-						chatId, ChatAction.typing.name()
-				)
-		);	
+		SendChatAction typingAction = new SendChatAction(chatId, ChatAction.typing.name());
+
+		baseResponse = bot.execute(typingAction);
 	}
 	
 	public void receiveUsersMessages() {
-		
 		while(true) {
-			
 			//taking the Queue of Messages
-			updatesResponse =  bot.execute(new GetUpdates().limit(100).offset(queueIndex));
+			updatesResponse = bot.execute(new GetUpdates().limit(100).offset(queueIndex));
 			
 			//Queue of messages
 			List<Update> usersInputQueue = updatesResponse.updates();
 			
 			for (Update userInput : usersInputQueue) {
-				
 				queueIndex = userInput.updateId()+1;
 				
 				// Checking whether the chat has already been stored
 				Long chatId;
+
 				if (userInput.callbackQuery() != null)
 					chatId = userInput.callbackQuery().message().chat().id();
-
 				else
 					chatId = userInput.message().chat().id();
 					
 				if(!chats.containsKey(chatId))		
 					chats.put(chatId, new Chat(chatId));
 				
-				chats.get(chatId).processInput(userInput, this);			
-	
+				chats.get(chatId).processInput(userInput, this);
 			}
 		}	
 	}
@@ -171,9 +163,5 @@ public class View implements Observer{
 			sendResponse = bot.execute(new SendMessage(chatId, (String) data));
 			chats.get(chatId).setFetchActivated(false);
 		}
-		
-		
-		
 	}
-
 }
