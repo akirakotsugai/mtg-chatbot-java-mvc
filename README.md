@@ -35,7 +35,7 @@ This is a telegram bot developed in Java to aid Magic: The Gathering players dur
 ## Class Diagram
 
 ![](https://raw.githubusercontent.com/akirakotsugai/mtg-chatbot-java-mvc/master/images/robot_chicken_class_diagram.png)
-> If you cant read the words in the diagram below, download it from this repository and zoom it in.
+> If you cant read the words in the diagram above, click on it or download it from this repository to zoom it in.
 
 
 
