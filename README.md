@@ -16,26 +16,27 @@ This is a telegram bot developed in Java to aid Magic: The Gathering players dur
 - Other under development features are coming soon...
 
 ## Sample Conversation
-> Asking for a card
+
 ![](https://raw.githubusercontent.com/akirakotsugai/mtg-chatbot-java-mvc/master/images/1_introduction_and_card_search.jpeg)
+> Asking for a card
 
->Selecting a card from the given cards
 ![](https://raw.githubusercontent.com/akirakotsugai/mtg-chatbot-java-mvc/master/images/2_card_selected_info_received.jpeg)
+>Selecting a card from the given cards
 
->Asking to see its picture
 ![](https://raw.githubusercontent.com/akirakotsugai/mtg-chatbot-java-mvc/master/images/3_picture_button_pressed_and_picture_received.jpeg)
+>Asking to see its picture
 
->Asking to see its rulings (not black lotus though, but bayou)
 ![](https://raw.githubusercontent.com/akirakotsugai/mtg-chatbot-java-mvc/master/images/4_rulings_button_pressed_and_rulings_received.jpeg)
+>Asking to see its rulings (not black lotus though, but bayou)
 
->Requesting the upcoming sets and choosing one for a preview of the release
 ![](https://raw.githubusercontent.com/akirakotsugai/mtg-chatbot-java-mvc/master/images/5_upcoming_sets_shown_and_chosen_set_details_received.jpeg)
-
+>Requesting the upcoming sets and choosing one for a preview of the release
 
 ## Class Diagram
 
-> If you cant read the words in the diagram below, give it a click or download it from this repository and zoom it in.
 ![](https://raw.githubusercontent.com/akirakotsugai/mtg-chatbot-java-mvc/master/images/robot_chicken_class_diagram.png)
+> If you cant read the words in the diagram below, download it from this repository and zoom it in.
+
 
 
 
