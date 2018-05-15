@@ -12,7 +12,7 @@ public class Main {
 			System.out.println("Running bot...");
 
 			model = Model.getInstance();			
-			View view = new View(model);
+			View view = View.getInstance(model);
 			model.registerObserver(view); //connection Model -> View
 			view.receiveUsersMessages();
 		} catch (Exception e) {

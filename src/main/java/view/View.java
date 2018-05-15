@@ -28,6 +28,8 @@ import model.Model;
 
 public class View implements Observer{
 	
+	private static View uniqueInstance;
+	
 	//Chats have to be stored to avoid conflicts between their messages and the bot's responses.
 	//each chat is identified by the chat id and has its own controller.
 	private ObjectContainer chats;
@@ -45,11 +47,18 @@ public class View implements Observer{
 	
 	TelegramBot bot = TelegramBotAdapter.build("497396638:AAFgKhV7J76-wh6vXlOTA0nkBl26MQxdvAU");
 	
-	public View(Model model) {
+	private View(Model model) {
 		this.model = model;
 		chats = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), "bd/chats.db4o");
 		//chats = new HashMap<Long, Chat>();
 		queueIndex = 0;
+	}
+	
+	public static View getInstance(Model model) {
+		if(uniqueInstance == null) {
+			uniqueInstance = new View(model);
+		}
+		return uniqueInstance;
 	}
 	
 	public void sendTypingAction(Long chatId) {
