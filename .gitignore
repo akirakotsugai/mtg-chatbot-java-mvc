@@ -2,4 +2,4 @@
 bin/
 build/
 .settings
-bd/chats.db4o
+bd/
