@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.db4o.Db4oEmbedded;
+import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramBotAdapter;
 import com.pengrad.telegrambot.model.Update;
@@ -24,8 +27,12 @@ import com.pengrad.telegrambot.response.SendResponse;
 import model.Model;
 
 public class View implements Observer{
+	
+	//Chats have to be stored to avoid conflicts between their messages and the bot's responses.
+	//each chat is identified by the chat id and has its own controller.
+	private ObjectContainer chats;
 
-	private HashMap<Long, Chat> chats;
+	//private HashMap<Long, Chat> chats;
 	Model model;
 	private int queueIndex;
 	//
@@ -36,11 +43,12 @@ public class View implements Observer{
 	//Object that manages chat actions such as "typing action"
 	BaseResponse baseResponse;
 	
-	TelegramBot bot = TelegramBotAdapter.build("INSERT YOUR API TOKEN HERE");
+	TelegramBot bot = TelegramBotAdapter.build("497396638:AAFgKhV7J76-wh6vXlOTA0nkBl26MQxdvAU");
 	
 	public View(Model model) {
 		this.model = model;
-		chats = new HashMap<Long, Chat>();
+		chats = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), "bd/chats.db4o");
+		//chats = new HashMap<Long, Chat>();
 		queueIndex = 0;
 	}
 	
@@ -69,14 +77,24 @@ public class View implements Observer{
 				else
 					chatId = userInput.message().chat().id();
 					
-				if(!chats.containsKey(chatId))		
-					chats.put(chatId, new Chat(chatId));
+//				if(!chats.containsKey(chatId))
+//					chats.put(chatId, new Chat(chatId));
 				
-				chats.get(chatId).processInput(userInput, this);
+				Chat proto = new Chat(chatId);
+					ObjectSet result=chats.queryByExample(proto);
+				
+				if (result.isEmpty()) chats.store(proto);
+	
+				else {
+					Chat chat = (Chat) result.get(0);
+					chat.processInput(userInput, this);
+				};
+//				chats.get(chatId).processInput(userInput, this);
 			}
 		}	
 	}
 	
+
 	@Override
 	public void update(long chatId, Object data, String type) {
 		
@@ -98,18 +116,23 @@ public class View implements Observer{
 			sendResponse = bot.execute(new SendMessage(chatId,
 					"just pick one out")
 					.parseMode(ParseMode.HTML).replyMarkup(inlineKeyboard));
-			chats.get(chatId).setFetchActivated(false);
+			
+			Chat chat = (Chat) chats.queryByExample(new Chat(chatId)).get(0);
+			chat.setFetchActivated(false);
 		}
 		
 		else if(type.contains("cardInfo")) {
-			int cardId = Integer.parseInt(type.split("#")[1]);
+			String[] callbackData = type.split("#");
+			String cardName = callbackData[2];
+			int cardId = Integer.parseInt(callbackData[1]);
 			List<InlineKeyboardButton[]> otherOptions = new LinkedList<InlineKeyboardButton[]>();
 			otherOptions.add(new InlineKeyboardButton[]{
 	                new InlineKeyboardButton("Picture")
 	                .callbackData("cardPic#"+cardId),
 	                new InlineKeyboardButton("Rulings")
-	                .callbackData("cardRulings#"+cardId)
-	                
+	                .callbackData("cardRulings#"+cardId),
+	                new InlineKeyboardButton("Prices")
+	                .callbackData("cardPrices#"+cardName)
 			});
 						
 			InlineKeyboardButton[][] buttonsMatrix = otherOptions.toArray(new InlineKeyboardButton[0][]);
@@ -130,6 +153,10 @@ public class View implements Observer{
 					(String) data).parseMode(ParseMode.HTML));
 		}
 		
+		else if(type.equals("cardPrices")) {
+			System.out.println((String) data); 
+		}
+		
 		else if(type.equals("allUpcomingSets")) {
 			
 			LinkedList<HashMap<String, String>> sets = (LinkedList<HashMap<String, String>>) data;
@@ -148,7 +175,9 @@ public class View implements Observer{
 			
 			sendResponse = bot.execute(new SendMessage(chatId, "Which upcoming set would you like to take a look at?")
 					.parseMode(ParseMode.HTML).replyMarkup(inlineKeyboard));
-			chats.get(chatId).setFetchActivated(false);
+			
+			Chat chat = (Chat) chats.queryByExample(new Chat(chatId)).get(0);
+			chat.setFetchActivated(false);
 		}
 		
 		else if(type.equals("comingsoonFailure")) {
@@ -161,7 +190,9 @@ public class View implements Observer{
 		
 		else if(type.equals("nocardfound")) {
 			sendResponse = bot.execute(new SendMessage(chatId, (String) data));
-			chats.get(chatId).setFetchActivated(false);
+			
+			Chat chat = (Chat) chats.queryByExample(new Chat(chatId)).get(0);
+			chat.setFetchActivated(false);
 		}
 	}
 }

@@ -34,5 +34,8 @@ dependencies {
 	
 	// https://github.com/MagicTheGathering/mtg-sdk-java
 	compile 'io.magicthegathering:javasdk:0.0.10'
+	
+	// Object Oriented DataBase
+	compile files("lib/db4o-8.0.249.16098-all-java5.jar")
 }
 

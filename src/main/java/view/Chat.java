@@ -7,6 +7,7 @@ import control.ControllerFetch;
 import control.ControllerFetchCard;
 import control.ControllerFetchCardPicture;
 import control.ControllerFetchCardRulings;
+import control.ControllerFetchPrices;
 import control.ControllerFetchUpcomingSetDetails;
 import control.ControllerFetchUpcomingSets;
 import control.ControllerSearchCard;
@@ -34,8 +35,9 @@ public class Chat {
 			controllerFetch = new ControllerFetchCardPicture(view.model, view);
 		} else if (userInput.callbackQuery().data().contains("cardRulings")) {
 			controllerFetch = new ControllerFetchCardRulings(view.model, view);
+		} else if (userInput.callbackQuery().data().contains("cardPrices")) {
+			controllerFetch = new ControllerFetchPrices(view.model, view);
 		}
-
 		callController(userInput);
 	}
 
