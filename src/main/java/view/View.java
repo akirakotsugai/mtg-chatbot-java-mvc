@@ -45,7 +45,7 @@ public class View implements Observer{
 	//Object that manages chat actions such as "typing action"
 	BaseResponse baseResponse;
 	
-	TelegramBot bot = TelegramBotAdapter.build("497396638:AAFgKhV7J76-wh6vXlOTA0nkBl26MQxdvAU");
+	TelegramBot bot = TelegramBotAdapter.build("INSERT YOUR API KEY IN HERE");
 	
 	private View(Model model) {
 		this.model = model;
@@ -189,6 +189,10 @@ public class View implements Observer{
 			chat.setFetchActivated(false);
 		}
 		
+		else if(type.equals("noCardInfo")) {
+			sendResponse = bot.execute(new SendMessage(chatId, (String) data));			
+		}
+		
 		else if(type.equals("comingsoonFailure")) {
 			sendResponse = bot.execute(new SendMessage(chatId, (String) data));
 		}
@@ -197,7 +201,7 @@ public class View implements Observer{
 			sendResponse = bot.execute(new SendMessage(chatId, (String) data));		
 		}
 		
-		else if(type.equals("nocardfound")) {
+		else if(type.equals("noCardFound")) {
 			sendResponse = bot.execute(new SendMessage(chatId, (String) data));
 			
 			Chat chat = (Chat) chats.queryByExample(new Chat(chatId)).get(0);

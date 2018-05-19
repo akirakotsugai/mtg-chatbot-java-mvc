@@ -81,7 +81,8 @@ public class Chat {
 			} else {
 				callMessageResponse(userInput, view);
 			}		
-		}	
+		}
+		
 	}
 
 	public boolean isFetchActivated() {

@@ -40,8 +40,7 @@ public class Model implements Subject {
 	public void notifyObservers(long chatId, Object data, String type) {
 		for(Observer observer : observers) {
 			observer.update(chatId, data, type);
-		}
-		
+		}		
 	}
 
 	@Override
@@ -67,14 +66,14 @@ public class Model implements Subject {
 				update.message().chat().id(),
 				"I am sorry "+update.message().chat().firstName() +
 				". I haven't found any name-related card or even similar to "+update.message().text(),
-				"nocardfound");
+				"noCardFound");
 	
 	}
 	
 	public void fetchCardInfo(Update update) {
 		int cardId = Integer.parseInt(update.callbackQuery().data().split("#")[1]);
 		String reply;
-		Card card = CardAPI.getCard(cardId);		
+		Card card = CardAPI.getCard(cardId);
 		
 		try {
 			String name = "<b>"+card.getName()+"</b>";
@@ -104,15 +103,19 @@ public class Model implements Subject {
 					+ "Cmc: " + cmc + " Colours: " + colours + "\n" + "Type: " + type + "\n"
 					+ text + "\n" + flavor + "\n\n Anything Else?" ;
 		
+			notifyObservers(update.callbackQuery().message().chat().id(),
+					reply, "cardInfo"+"#"+cardId+"#"+card.getName());
+					//we're also passing the card's name because
+					//it will make it easier to bring the card's price later
+		
 		} catch (Exception e) {
 			reply = "I'm so sorry " + update.callbackQuery().message().chat().firstName() 
 					+ ". I wasn't able to bring the info you asked for.";
+			
+			notifyObservers(update.callbackQuery().message().chat().id(),
+					reply, "noCardInfo");
 		}
-		
-		notifyObservers(update.callbackQuery().message().chat().id(),
-				reply, "cardInfo"+"#"+cardId+"#"+card.getName());
-				//we're also passing the card's name because
-				//it will make it easier to bring the card's price later
+
 
 	}
 	
